@@ -18,13 +18,15 @@ k = 3;
 prediction = zeros(mTest,1);
 similarity = zeros(m,    1);
 
+% USING EUCLIDEAN DISTANCE
 for i=1:mTest
 	xi = Xtest(i,:);
 	for j=1:m
 		xj = X(j,:);
-		similarity(j,1) = euclidean_distance(xi, xj);
+		% -1 according to Frey and Dueck definition of similarity
+		similarity(j,1) = -1 * euclidean_distance(xi, xj);
 	end
-	[_, idx] = sort(similarity,'ascend');
+	[_, idx] = sort(similarity,'descend');
 	idx = idx(1:k,:)';
 	a   = sum(y(idx,1));
 	b   = k-a;
@@ -37,6 +39,28 @@ end
 eff = sum((prediction==ytest))/mTest*100;
 printf('euclidean_distance: %f\n',eff);
 
+% USING SQUERED EUCLIDEAN DISTANCE
+for i=1:mTest
+	xi = Xtest(i,:);
+	for j=1:m
+		xj = X(j,:);
+		% -1 according to Frey and Dueck definition of similarity
+		similarity(j,1) = -1 * squared_euclidean_distance(xi, xj);
+	end
+	[_, idx] = sort(similarity,'descend');
+	idx = idx(1:k,:)';
+	a   = sum(y(idx,1));
+	b   = k-a;
+	if (a>=b)
+		prediction(i)=1;
+	else
+		prediction(i)=0;
+	end	
+end
+eff = sum((prediction==ytest))/mTest*100;
+printf('squared euclidean distance: %f\n',eff);
+
+% USING COSINE SIMILARITY
 for i=1:mTest
 	xi = Xtest(i,:);
 	for j=1:m
