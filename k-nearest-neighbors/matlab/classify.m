@@ -5,43 +5,53 @@ clc;
 data = load('../../datasets/hash-recogintion/dataset.csv');
 data = [ones(4000,1) data];
 
-X=data(1:2800, 1:9);
-y=data(1:2800, 10);
+X = data(1:2800, 1:9);
+y = data(1:2800, 10);
 
-Xtest=data(2801:end, 1:9);
-ytest=data(2801:end, 10);
+Xtest = data(2801:end, 1:9);
+ytest = data(2801:end, 10);
 
 k = 3;
-[m_test,n_test]=size(Xtest);
+[m, n]         = size(X);
+[mTest, nTest] = size(Xtest);
 
-%p = zeros(m_test,1);
-%for i=1:m_test
-%	x = Xtest(i,:);
-%	similarity = euclidean_distance(X, x);
-%	[a, index] = sort(similarity,'ascend');
-%	index = index(1:k,:)';
-%	a = sum(y(index,1));
-%	b = k-a;
-%	if (a>=b)
-%		p(i)=1;
-%	else
-%		p(i)=0;
-%	end
-%end
-%sum((p==ytest))/m_test*100
+prediction = zeros(mTest,1);
+similarity = zeros(m,    1);
 
-p = zeros(m_test,1);
-for i=1:m_test
-	x = Xtest(i,:);
-	similarity = cosine_similarity(X, x);
-	[_, index] = sort(similarity,'descend');
-	index = index(1:k,:)';
-	a = sum(y(index,1));
-	b = k-a;
+for i=1:mTest
+	xi = Xtest(i,:);
+	for j=1:m
+		xj = X(j,:);
+		similarity(j,1) = euclidean_distance(xi, xj);
+	end
+	[_, idx] = sort(similarity,'ascend');
+	idx = idx(1:k,:)';
+	a   = sum(y(idx,1));
+	b   = k-a;
 	if (a>=b)
-		p(i)=1;
+		prediction(i)=1;
 	else
-		p(i)=0;
+		prediction(i)=0;
 	end	
 end
-sum((p==ytest))/m_test*100
+eff = sum((prediction==ytest))/mTest*100;
+printf('euclidean_distance: %f\n',eff);
+
+for i=1:mTest
+	xi = Xtest(i,:);
+	for j=1:m
+		xj = X(j,:);
+		similarity(j,1) = cosine_similarity(xi, xj);
+	end
+	[_, idx] = sort(similarity,'descend');
+	idx = idx(1:k,:)';
+	a   = sum(y(idx,1));
+	b   = k-a;
+	if (a>=b)
+		prediction(i)=1;
+	else
+		prediction(i)=0;
+	end	
+end
+eff = sum((prediction==ytest))/mTest*100;
+printf('cosine_similarity: %f\n',eff);
