@@ -2,21 +2,29 @@ clear all;
 close all,
 clc;
 
+% CONFIGURATION
+k = 3;		% number of neighbors that will vote
+r = 0.7; 	% the size of teaching set
+
+% LOADING DATASET
 data = load('../../datasets/hash-recogintion/dataset.csv');
-data = [ones(4000,1) data];
+[mData, _] = size(data);
+data = [ones(mData,1) data];
 
-X = data(1:2800, 1:9);
-y = data(1:2800, 10);
+% SPLIT DATASET INTO TEACHING AND TESTING BATCH
+lastTeachingIdx = ceil(0.7*mData);
+firstTestingIdx = lastTeachingIdx + 1;
+X     = data(1:lastTeachingIdx, 1:9);   % teaching examples
+y     = data(1:lastTeachingIdx, 10);    % teaching classes
+Xtest = data(firstTestingIdx:end, 1:9); % testing  examples
+ytest = data(firstTestingIdx:end, 10);  % testing  classes
 
-Xtest = data(2801:end, 1:9);
-ytest = data(2801:end, 10);
 
-k = 3;
-[m, n]         = size(X);
-[mTest, nTest] = size(Xtest);
+[m, _]     = size(X);     % of course m = lastTeachingIdx but this is true only in Matlab
+[mTest, _] = size(Xtest);
 
-prediction = zeros(mTest,1);
 similarity = zeros(m,    1);
+prediction = zeros(mTest,1);
 
 % Whenever a similarity is computed according to some kind of distance
 % the computed value is subtracted from 1. This fulfills Frey and Dueck 
@@ -43,7 +51,7 @@ for i=1:mTest
 	end	
 end
 eff = sum((prediction==ytest))/mTest*100;
-printf('euclidean_distance: %f\n',eff);
+printf('The efficiency of kNN with Manhattan distance: %f\n',eff);
 
 % USING EUCLIDEAN DISTANCE
 for i=1:mTest
@@ -64,7 +72,7 @@ for i=1:mTest
 	end	
 end
 eff = sum((prediction==ytest))/mTest*100;
-printf('euclidean_distance: %f\n',eff);
+printf('The efficiency of kNN with Euclidean distance: %f\n',eff);
 
 % USING CHEBYSHEV DISTANCE
 for i=1:mTest
@@ -84,7 +92,7 @@ for i=1:mTest
 	end	
 end
 eff = sum((prediction==ytest))/mTest*100;
-printf('chebyshev_distance: %f\n',eff);
+printf('The efficiency of kNN with Chebyshev distance: %f\n',eff);
 
 % USING HAMMING DISTANCE
 for i=1:mTest
@@ -104,7 +112,7 @@ for i=1:mTest
 	end	
 end
 eff = sum((prediction==ytest))/mTest*100;
-printf('hamming_distance:   %f\n',eff);
+printf('The efficiency of kNN with Hamming distance:   %f\n',eff);
 
 % USING COSINE SIMILARITY
 % In case of cosine similarity I do not subtract it from 1, because 
@@ -127,4 +135,4 @@ for i=1:mTest
 	end	
 end
 eff = sum((prediction==ytest))/mTest*100;
-printf('cosine_similarity:  %f\n',eff);
+printf('The efficiency of kNN with cosine similarity:  %f\n',eff);

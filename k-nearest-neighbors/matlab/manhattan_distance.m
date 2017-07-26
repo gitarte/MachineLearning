@@ -1,6 +1,6 @@
 % computing distance between two vectors
 % using Minkowski formula where p=1
-% https://en.wikipedia.org/wiki/Euclidean_distance
+% https://en.wikipedia.org/wiki/Taxicab_geometry
 % arguments:
 %	a - horizontal vector
 %	b - horizontal vector
