@@ -8,17 +8,15 @@ r = 0.9; 	% the size of teaching set
 
 % LOADING DATASET
 data = load('../../datasets/hash-recogintion/dataset.csv');
-[mData, _] = size(data);
-data = [ones(mData,1) data];
+[mData, nData] = size(data);
 
 % SPLIT DATASET INTO TEACHING AND TESTING BATCH
 lastTeachingIdx = ceil(0.7*mData);
 firstTestingIdx = lastTeachingIdx + 1;
-X     = data(1:lastTeachingIdx,   1:9); % teaching examples
-y     = data(1:lastTeachingIdx,   10);  % teaching classes
-Xtest = data(firstTestingIdx:end, 1:9); % testing  examples
-ytest = data(firstTestingIdx:end, 10);  % testing  classes
-
+X     = data(1:lastTeachingIdx,   1:(nData-1)); % teaching examples
+y     = data(1:lastTeachingIdx,   nData);       % teaching classes
+Xtest = data(firstTestingIdx:end, 1:(nData-1)); % testing  examples
+ytest = data(firstTestingIdx:end, nData);       % testing  classes
 
 [m, _]     = size(X);     % of course m = lastTeachingIdx but this is true only in Matlab
 [mTest, _] = size(Xtest);
@@ -57,7 +55,7 @@ for i=1:mTest
 	idx = idx(1:k,:)';
 	% Take classes of those examples, which indexes you selected during
 	% limiting the sorted similarity vector to k entries
-	classes = y(idx,1)
+	classes = y(idx,1);
 	% Since this is a binary classification you can have either ones or
 	% zeros. Performing sum on extracted classes you will comput
 	% the number of positive classes...
