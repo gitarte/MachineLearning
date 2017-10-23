@@ -1,10 +1,13 @@
 # MACHINE LEARNING TRIALBLAZER
 ### libraries
 [install scipy stack](https://www.scipy.org/install.html)
-
 [install scikit-learn](http://scikit-learn.org/stable/install.html)
-
 [install matplotlib](https://matplotlib.org/users/installing.html)
+
+Usually it is more then enough to do:
+```bash
+pip install --user numpy scipy matplotlib ipython jupyter pandas sympy nose seaborn graphviz scikit-learn
+```
 
 ### examples
 ###### classification
